@@ -73,9 +73,11 @@ then
   confirm_run
   echo "Collect Users"
   userlist
+  build_cache
   generate-user-report  "all"
   call_modules "all" ${MODULE}
 else
+  build_cache
   generate-user-report ${2}
   # update report test function
   #update-report ${2} "TEST MESSAGE" "WORKS"

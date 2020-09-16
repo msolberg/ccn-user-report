@@ -4,9 +4,9 @@
 # Dark Yellow 0;33
 
 function module2-started(){
-    MODULE2_GUIDE=$(oc get pods -n labs-infra | grep guides-m2-  | grep -v 'deploy\|build'| awk '{print $1}')
+    MODULE2_GUIDE=$(cat ~/tmp/pods.cache | grep guides-m2-  | grep -v 'deploy\|build'| awk '{print $2}')
     USERNAME=${1}
-    echo -e ${MODULE2_GUIDE}
+    #echo -e ${MODULE2_GUIDE}
     oc logs ${MODULE2_GUIDE} -n labs-infra | grep -o ${USERNAME} | tee ~/tmp/result.log
     if cat ~/tmp/result.log | grep -q "${USERNAME}"
     then
@@ -53,11 +53,11 @@ function pipeline-build-status(){
 function codeready-build-status-m2(){
   #oc exec -it workspacevcrfmajrels996ep.quarkus-tools-d88b6d4c5-4rl9t  -n labs-infra -c theia-idedum ls /projects/cloud-native-workshop-v2m1-labs/monolith/target
   #
-  CODEREADYLOGIN=$(oc get pods -n labs-infra | grep codeready- | grep -v  'deploy\|build|\|operator' | awk '{print $1}')
+  CODEREADYLOGIN=$(cat ~/tmp/pods.cache | grep codeready- | grep -v  'deploy\|build|\|operator' | awk '{print $2}')
   USERNAME=${1}
   APP=${2}
-  WORKSTATIONID=$(oc logs ${CODEREADYLOGIN}  -n labs-infra | grep ${USERNAME} | grep -o -P 'workspace.[a-z0-9]{15}' | head -1)
-  CODEREADYCONTAINER=$(oc get pods -n labs-infra | grep ${WORKSTATIONID} | grep -v  'deploy\|build|\|operator'| awk '{print $1}')
+  WORKSTATIONID=$( oc logs ${CODEREADYLOGIN}  -n labs-infra | grep ${USERNAME} | grep -o -P 'workspace.[a-z0-9]{15}' | head -1)
+  CODEREADYCONTAINER=$(cat ~/tmp/pods.cache | grep ${WORKSTATIONID} | grep -v  'deploy\|build|\|operator'| awk '{print $2}')
   THEIACONTAINER=$(oc describe pod ${CODEREADYCONTAINER} -n labs-infra | grep -E theia-ide[a-z0-9]{3} | tr -d ":" | head -1 | awk '{print $2}')
   oc exec -it ${CODEREADYCONTAINER}  -n labs-infra -c ${THEIACONTAINER} ls /projects/cloud-native-workshop-v2m2-labs/${APP}/target | tee ~/tmp/result.log
 

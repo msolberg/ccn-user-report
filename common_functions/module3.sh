@@ -1,5 +1,5 @@
 function module3-started(){
-    MODULE3_GUIDE=$(oc get pods -n labs-infra | grep guides-m3-  | grep -v 'deploy\|build' | awk '{print $1}')
+    MODULE3_GUIDE=$(cat ~/tmp/pods.cache | grep guides-m3-  | grep -v 'deploy\|build' | awk '{print $2}')
     USERNAME=${1}
     #echo -e ${MODULE3_GUIDE}
     oc logs ${MODULE3_GUIDE} -n labs-infra | grep -w -o ${USERNAME} > ~/tmp/result.log

@@ -70,6 +70,20 @@ function confirm_run(){
   done
 }
 
+function build_cache(){
+    # Clean existing caches
+    rm -f ~/tmp/pods.cache
+    rm -f ~/tmp/routes.cache
+    rm -f ~/tmp/services.cache
+
+    # Get all pods from all namespaces
+    oc get pods --all-namespaces > ~/tmp/pods.cache
+    # Get all routes from all namespaces
+    oc get routes --all-namespaces > ~/tmp/routes.cache
+    # Get all services from all namespaces
+    oc get services --all-namespaces > ~/tmp/services.cache
+}
+
 function call_modules(){
     if [ "${1}" != "all" ];
     then
@@ -205,7 +219,7 @@ esac
 }
 
 function loggedin-to-codeready(){
-    CODEREADYLOGIN=$(oc get pods -n labs-infra | grep codeready- | grep -v 'deploy\|build|\|operator'| awk '{print $1}')
+    CODEREADYLOGIN=$(cat ~/tmp/pods.cache | grep codeready- | grep -v 'deploy\|build|\|operator'| awk '{print $2}')
     USERNAME=${1}
     MESSAGE=${2}
     # echo -e ${CODEREADYLOGIN}

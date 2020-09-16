@@ -1,5 +1,5 @@
 function module4-started(){
-    MODULE3_GUIDE=$(oc get pods -n labs-infra | grep guides-m4- | grep -v 'deploy\|build' | awk '{print $1}')
+    MODULE3_GUIDE=$(cat ~/tmp/pods.cache | grep guides-m4- | grep -v 'deploy\|build' | awk '{print $2}')
     USERNAME=${1}
     echo -e ${MODULE3_GUIDE}
     oc logs ${MODULE3_GUIDE} -n labs-infra | grep -o ${USERNAME} | tee ~/tmp/result.log
@@ -40,7 +40,7 @@ function pipeline-build-attempted(){
   MESSAGE=${3}
   SEARCHVAL=${4}
 
-  oc get pods -n ${NAMESPACE} | grep "${SEARCHVAL}"  | tee  ~/tmp/result.log 
+  grep ${NAMESPACE} ~/tmp/pods.cache | grep "${SEARCHVAL}"  | tee  ~/tmp/result.log 
 
   if cat ~/tmp/result.log | grep  -q "${SEARCHVAL}"
   then
